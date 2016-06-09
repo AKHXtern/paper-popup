@@ -5,7 +5,6 @@ This code may only be used under the MIT license found at http://opensource.org/
 Or see the LICENSE file that comes with this code.
 -->
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="paper-popup-content.html">
 <link rel="import" href="../related-position-behavior/related-position-behavior.html">
 <link rel="import" href="../iron-resizable-behavior/iron-resizable-behavior.html">
 
@@ -58,24 +57,16 @@ Example
           @apply(--paper-popup-opener);
         }
 
-        :host(.open) #icon {
-          @apply(--paper-popup-opener-open);
-        }
-
-        #icon:hover {
-          @apply(--paper-popup-opener-hover);
-        }
-
-        :host(.left) paper-popup-content {
+        :host(.left) #content {
           transform: translateX(-100%) translateY(-50%) !important;
           margin-left: -10px;
         }
 
-        :host(.right) paper-popup-content {
+        :host(.right) #content {
           transform: translateY(-50%) translateX(25px) !important;
         }
 
-        paper-popup-content {
+        #content {
           position: absolute;
           left: 0 !important;
           top: 0 !important;
@@ -84,6 +75,11 @@ Example
           box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
           padding: 15px;
           background: white;
+          display: none;
+        }
+
+        :host(:focus) #content {
+          display: block;
         }
 
         :host([disabled]) {
@@ -95,100 +91,28 @@ Example
           @apply(--paper-popup-opener-disabled);
         }
     </style>
-
-    <div id="icon" on-click="_togglePopup">
-      <content select="[popup-toggle]"></content>
-
+    <div id="content">
+      <content></content>
     </div>
-    <paper-popup-content id="popup" on-is-open-changed="_isOpenChanged">
-      <content select="[popup-slider]"></content>
-      <content select="[popup]"></content>
-    </icon-popup-content>
   </template>
 </dom-module>
 <script>
   Polymer({
     is: 'paper-popup',
 
-    behaviors: [
-      Polymer.RelatedPositionBehavior,
-      Polymer.IronResizableBehavior
-    ],
-
-    listeners: {
-      'iron-resize': '_onResize',
-      'click': '_cancelDocClickJob'
+    ready: function() {
+      var that = this;
+      that.setAttribute('tabindex', 2);
     },
 
-    /**
-     * Get the popup element.
-     */
-    get popup() {
-      return this.$.popup;
-    },
-
-    /**
-     * Brings the `paper-popup` into 'open' state.
-     */
     open: function() {
-      if (!this.popup.isOpen) {
-        this.popup.fire('popup-open');
-        this._togglePopup();
-      }
+      this.fire('popup-open', {});
+      this.focus();
     },
 
-    /**
-     * Brings the `paper-popup` into 'closed' state.
-     */
     close: function() {
-      if (this.popup.isOpen) {
-        this.popup.fire('popup-close');
-        this._togglePopup();
-      }
-    },
-
-    /**
-     * Toggles the state of the `popup`.
-     */
-    toggle: function() {
-      this._togglePopup();
-    },
-
-    _togglePopup: function () {
-      if (this.popup.isOpen) {
-        this.$.popup.close();
-      } else {
-        this.$.popup.open();
-      }
-
-      this._open = !this._open;
-      this.toggleClass('open', this.popup.isOpen);
-      this._updatePos();
-    },
-
-    _isOpenChanged: function(e) {
-      this.toggleClass('open', this.popup.isOpen);
-    },
-
-    _updatePos: function() {
-      this.updateRelatedPosition(this.popup);
-    },
-
-    _closed: function() {
-      this.toggleClass('open', this.popup.isOpen);
-    },
-
-    _onResize: function() {
-      if (this.popup.isOpen) {
-        this.updateRelatedPosition(this.$.popup);
-      }
-    },
-
-    _cancelDocClickJob: function() {
-      if (this.popup._docClickJob) {
-        this.cancelAsync(this.popup._docClickJob);
-        this.popup._docClickJob = null;
-      }
+      this.fire('popup-close', {});
+      this.blur();
     }
   });
 </script>
