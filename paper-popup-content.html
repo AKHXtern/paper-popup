@@ -33,7 +33,7 @@ Wraps the content for `paper-popup`. Uses `iron-overlay-behavior` to act like a 
     <div id="closeSlider" on-tap="_handleSliderTap" on-track="_handleSliderTrack">
       <content select="[popup-slider]"></content>
     </div>
-    <paper-material class='paper-popup-material' elevation="2">
+    <div class='paper-popup-content'>
       <content></content>
     </paper-material>
   </template>
@@ -93,7 +93,12 @@ Wraps the content for `paper-popup`. Uses `iron-overlay-behavior` to act like a 
     },
 
     ready: function() {
-      this._prepPopup();
+        var that = this;
+        that._prepPopup();
+
+        that.parentNode.on('blur', function(){
+            that.close();
+        })
     },
 
     detached: function() {
