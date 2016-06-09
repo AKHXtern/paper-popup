@@ -40,46 +40,60 @@ Example
 <dom-module id="paper-popup">
   <template>
     <style>
-      :host {
-        @apply(--layout);
-        @apply(--layout-center-center);
+        :host {
+          @apply(--layout);
+          @apply(--layout-center-center);
 
-        @apply(--paper-popup);
-      }
+          @apply(--paper-popup);
+        }
 
-      #icon {
-        cursor: pointer;
+        #icon {
+          cursor: pointer;
 
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
 
-        @apply(--paper-popup-opener);
-      }
+          @apply(--paper-popup-opener);
+        }
 
-      :host(.open) #icon {
-        @apply(--paper-popup-opener-open);
-      }
+        :host(.open) #icon {
+          @apply(--paper-popup-opener-open);
+        }
 
-      #icon:hover {
-        @apply(--paper-popup-opener-hover);
-      }
+        #icon:hover {
+          @apply(--paper-popup-opener-hover);
+        }
 
-      paper-popup-content {
-        position: absolute;
-        left: 0;
-        top: 0;
-      }
+        :host(.left) paper-popup-content {
+          transform: translateX(-100%) translateY(-50%) !important;
+          margin-left: -10px;
+        }
 
-      :host([disabled]) {
-        pointer-events: none;
-        @apply(--paper-popup-disabled);
-      }
+        :host(.right) paper-popup-content {
+          transform: translateY(-50%) translateX(25px) !important;
+        }
 
-      :host([disabled]) #icon {
-        @apply(--paper-popup-opener-disabled);
-      }
+        paper-popup-content {
+          position: absolute;
+          left: 0 !important;
+          top: 0 !important;
+          max-height: 200px;
+          overflow-y: auto;
+          box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
+          padding: 15px;
+          background: white;
+        }
+
+        :host([disabled]) {
+          pointer-events: none;
+          @apply(--paper-popup-disabled);
+        }
+
+        :host([disabled]) #icon {
+          @apply(--paper-popup-opener-disabled);
+        }
     </style>
 
     <div id="icon" on-click="_togglePopup">
@@ -118,6 +132,7 @@ Example
      */
     open: function() {
       if (!this.popup.isOpen) {
+        this.popup.fire('popup-open');
         this._togglePopup();
       }
     },
@@ -127,6 +142,7 @@ Example
      */
     close: function() {
       if (this.popup.isOpen) {
+        this.popup.fire('popup-close');
         this._togglePopup();
       }
     },

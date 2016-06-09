@@ -137,6 +137,9 @@ Wraps the content for `paper-popup`. Uses `iron-overlay-behavior` to act like a 
     },
 
     open: function() {
+
+      this.fire('popup-open',{});
+
       if (this.isNarrow) {
         this._movePopup('0', '%');
       } else {
@@ -149,6 +152,9 @@ Wraps the content for `paper-popup`. Uses `iron-overlay-behavior` to act like a 
     },
 
     close: function () {
+
+      this.fire('popup-close', {});
+
       if (this.isNarrow) {
         this._movePopup('100', '%');
       } else {
